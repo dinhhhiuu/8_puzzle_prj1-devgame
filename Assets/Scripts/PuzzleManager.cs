@@ -31,11 +31,14 @@ public class PuzzleManager : MonoBehaviour
 
     public void ShufflePieces()
     {
-        for (int i = 0; i < pieces.Count - 1; i++) 
+        do
         {
-            int randomIndex = Random.Range(0, pieces.Count - 1);
-            SwapPieces(i, randomIndex);
-        }
+            for (int i = 0; i < pieces.Count - 1; i++)
+            {
+                int randomIndex = Random.Range(0, pieces.Count - 1);
+                SwapPieces(i, randomIndex);
+            }
+        } while (!IsSolvable(pieces)); // Lặp lại nếu không giải được
     }
 
     void AssignClickEvents()
@@ -100,6 +103,35 @@ public class PuzzleManager : MonoBehaviour
         img.sprite = finalImage;
         img.color = new Color(1, 1, 1, 1); 
     }
+
+    bool IsSolvable(List<Transform> pieces)
+{
+    List<int> numbers = new List<int>();
+
+    foreach (Transform piece in pieces)
+    {
+        string name = piece.name; 
+        if (name.StartsWith("hcmut_"))
+        {
+            int num = int.Parse(name.Split('_')[1]);
+            numbers.Add(num);
+        }
+    }
+
+    int inversionCount = 0;
+    for (int i = 0; i < numbers.Count - 1; i++)
+    {
+        for (int j = i + 1; j < numbers.Count; j++)
+        {
+            if (numbers[i] > numbers[j] && numbers[i] != 8 && numbers[j] != 8)
+            {
+                inversionCount++;
+            }
+        }
+    }
+
+    return inversionCount % 2 == 0; // Chỉ giải được nếu chẵn
+}
 }
 
 
