@@ -466,6 +466,7 @@ GameObject:
   m_Component:
   - component: {fileID: 549061330}
   - component: {fileID: 549061331}
+  - component: {fileID: 549061332}
   m_Layer: 5
   m_Name: Grid
   m_TagString: Untagged
@@ -525,6 +526,14 @@ MonoBehaviour:
   m_Spacing: {x: 5, y: 5}
   m_Constraint: 1
   m_ConstraintCount: 3
+--- !u!222 &549061332
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 549061329}
+  m_CullTransparentMesh: 1
 --- !u!1 &752200723
 GameObject:
   m_ObjectHideFlags: 0
@@ -943,17 +952,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8a53bb5ecb04ec43bd452a29fd0ca55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tiles:
-  - {fileID: 1603937662}
-  - {fileID: 1394611056}
-  - {fileID: 30307072}
-  - {fileID: 1714381457}
-  - {fileID: 1556530211}
-  - {fileID: 2045268422}
-  - {fileID: 886219129}
-  - {fileID: 120215631}
-  - {fileID: 971953056}
-  emptySprite: {fileID: -1203688072, guid: b3e757937d1d9ec41a97fc4b4ec2ed8d, type: 3}
+  gridLayout: {fileID: 549061331}
+  finalImage: {fileID: -1203688072, guid: b3e757937d1d9ec41a97fc4b4ec2ed8d, type: 3}
 --- !u!4 &898180614
 Transform:
   m_ObjectHideFlags: 0
@@ -983,7 +983,7 @@ GameObject:
   - component: {fileID: 971953056}
   m_Layer: 5
   m_Name: hcmut_8
-  m_TagString: Untagged
+  m_TagString: Empty
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1090,6 +1090,81 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1251828447
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1251828448}
+  - component: {fileID: 1251828450}
+  - component: {fileID: 1251828449}
+  m_Layer: 5
+  m_Name: background
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1251828448
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1251828447}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1604520407}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 799, y: 449.2}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1251828449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1251828447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: -156579537, guid: 94ca53822e40bab4d9010380776643f9, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1251828450
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1251828447}
+  m_CullTransparentMesh: 1
 --- !u!1 &1309027115
 GameObject:
   m_ObjectHideFlags: 0
@@ -1954,6 +2029,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1251828448}
   - {fileID: 549061330}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
