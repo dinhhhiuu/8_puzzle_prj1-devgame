@@ -24,7 +24,9 @@ public class PuzzleManager : MonoBehaviour
             if (child.CompareTag("Empty"))
             {
                 emptyPiece = child;
-                emptyPiece.GetComponent<Image>().enabled = false;
+                Image img = emptyPiece.GetComponent<Image>();
+                img.sprite = null;
+                img.color = new Color(1, 1, 1, 0);
             }
         }
     }
@@ -98,7 +100,10 @@ public class PuzzleManager : MonoBehaviour
 
         Debug.Log("🎉 Chúc mừng! Bạn đã hoàn thành trò chơi!");
 
-        emptyPiece.GetComponent<Image>().enabled = true;
+        Image img = emptyPiece.GetComponent<Image>();
+
+        img.sprite = finalImage;
+        img.color = new Color(1, 1, 1, 1); 
     }
 
     bool IsSolvable(List<Transform> pieces)
