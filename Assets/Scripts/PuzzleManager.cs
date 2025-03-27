@@ -12,7 +12,6 @@ public class PuzzleManager : MonoBehaviour
     void Start()
     {
         InitializePieces();
-        ShufflePieces();
         AssignClickEvents();
     }
 
