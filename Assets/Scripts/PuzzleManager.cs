@@ -15,7 +15,7 @@ public class PuzzleManager : MonoBehaviour
         AssignClickEvents();
     }
 
-    void InitializePieces()
+    public void InitializePieces()
     {
         pieces.Clear();
         foreach (Transform child in gridLayout.transform)
@@ -24,6 +24,7 @@ public class PuzzleManager : MonoBehaviour
             if (child.CompareTag("Empty"))
             {
                 emptyPiece = child;
+                emptyPiece.GetComponent<Image>().enabled = false;
             }
         }
     }
@@ -97,10 +98,7 @@ public class PuzzleManager : MonoBehaviour
 
         Debug.Log("🎉 Chúc mừng! Bạn đã hoàn thành trò chơi!");
 
-        Image img = emptyPiece.GetComponent<Image>();
-
-        img.sprite = finalImage;
-        img.color = new Color(1, 1, 1, 1); 
+        emptyPiece.GetComponent<Image>().enabled = true;
     }
 
     bool IsSolvable(List<Transform> pieces)
