@@ -1,24 +1,40 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 public class PuzzleManager : MonoBehaviour
 {
     public GridLayoutGroup gridLayout; 
     private List<Transform> pieces = new List<Transform>();
     private Transform emptyPiece; 
-    public Sprite finalImage; 
+    public Sprite finalImage;
+    
+    [SerializeField] private GameObject gameWinUI;
+    [SerializeField] private GameObject SettingPanel;
+    [SerializeField] private GameObject grid3x3;
+    [SerializeField] private GameObject grid4x4;
+    [SerializeField] private GameObject line3x3;
+    [SerializeField] private GameObject line4x4;
+    private GameObject activeGrid;
 
     void Start()
     {
+        grid3x3.SetActive(true);
+        line3x3.SetActive(true);
+        grid4x4.SetActive(false);
+        line4x4.SetActive(false);
+        
+        activeGrid = grid3x3;
         InitializePieces();
         AssignClickEvents();
+        gameWinUI.SetActive(false);
+        SettingPanel.SetActive(false);
     }
 
     public void InitializePieces()
     {
         pieces.Clear();
-        foreach (Transform child in gridLayout.transform)
+        foreach (Transform child in activeGrid.transform)
         {
             pieces.Add(child);
             if (child.CompareTag("Empty"))
@@ -50,13 +66,17 @@ public class PuzzleManager : MonoBehaviour
             Button button = piece.GetComponent<Button>();
             if (button != null)
             {
-                button.onClick.AddListener(() => TryMovePiece(piece));
+                //button.onClick.AddListener(() => TryMovePiece(piece));
+                button.onClick.RemoveAllListeners();  // Xóa tất cả listener trước khi thêm mới
+                button.onClick.AddListener(delegate { TryMovePiece(piece); });
             }
         }
     }
 
     void TryMovePiece(Transform clickedPiece)
     {
+        if (clickedPiece == emptyPiece) return;
+
         int clickedIndex = pieces.IndexOf(clickedPiece);
         int emptyIndex = pieces.IndexOf(emptyPiece);
 
@@ -69,7 +89,7 @@ public class PuzzleManager : MonoBehaviour
 
     bool IsAdjacent(int indexA, int indexB)
     {
-        int gridSize = 3; 
+        int gridSize = activeGrid == grid3x3 ? 3 : 4; 
         int rowA = indexA / gridSize, colA = indexA % gridSize;
         int rowB = indexB / gridSize, colB = indexB % gridSize;
 
@@ -99,6 +119,7 @@ public class PuzzleManager : MonoBehaviour
         }
 
         Debug.Log("🎉 Chúc mừng! Bạn đã hoàn thành trò chơi!");
+        GameWin();
 
         Image img = emptyPiece.GetComponent<Image>();
 
@@ -134,6 +155,65 @@ public class PuzzleManager : MonoBehaviour
 
     return inversionCount % 2 == 0; // Chỉ giải được nếu chẵn
 }
+    public void GameWin()
+    {
+        Time.timeScale = 0;
+        gameWinUI.SetActive(true);
+        Debug.Log("✅ gameWinUI đã được kích hoạt!");
+    }
+
+    public void RestartGame(bool again)
+    {
+        Time.timeScale = 1;
+        gameWinUI.SetActive(false);
+        InitializePieces();  // Load lại danh sách pieces từ activeGrid
+        AssignClickEvents(); // Gán lại sự kiện click        
+        if(again)
+        {
+            SceneManager.LoadScene("SampleScene");
+        }
+        //SceneManager.LoadScene("SampleScene");
+    }
+    public void onClickSetting()
+    {
+        //SceneManager.LoadScene("Setting");
+        SettingPanel.SetActive(true);
+    }
+    public void SetGridSize(int size)
+{
+    if (size == 3)
+    {
+        grid3x3.SetActive(true);
+        line3x3.SetActive(true);
+        grid4x4.SetActive(false);
+        line4x4.SetActive(false);
+        activeGrid = grid3x3;
+    }
+    else if (size == 4)
+    {
+        grid3x3.SetActive(false);
+        line3x3.SetActive(false);
+        grid4x4.SetActive(true);
+        line4x4.SetActive(true);
+        activeGrid = grid4x4; // Cập nhật activeGrid
+    }
+
+    InitializePieces();  // Load lại danh sách pieces
+    AssignClickEvents(); // Gán lại sự kiện click cho từng ô
+    emptyPiece = pieces.Find(piece => piece.CompareTag("Empty"));
+
+}
+
+    public void onClick3x3()
+    {
+        SetGridSize(3);
+        SettingPanel.SetActive(false);
+    }
+    public void onClick4x4()
+    {
+        SetGridSize(4);
+        SettingPanel.SetActive(false);
+    }
 }
 
 
