@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEditor.Tilemaps;
 public class PuzzleManager : MonoBehaviour
 {
-    public GridLayoutGroup gridLayout; 
+    public GridLayoutGroup gridLayout_3x3;
+    public GridLayoutGroup gridLayout_4x4; 
     private List<Transform> pieces = new List<Transform>();
     private Transform emptyPiece; 
     public Sprite finalImage;
@@ -16,6 +19,7 @@ public class PuzzleManager : MonoBehaviour
     [SerializeField] private GameObject line3x3;
     [SerializeField] private GameObject line4x4;
     private GameObject activeGrid;
+    private GameObject activeLine;
 
     void Start()
     {
@@ -25,6 +29,7 @@ public class PuzzleManager : MonoBehaviour
         line4x4.SetActive(false);
         
         activeGrid = grid3x3;
+        activeLine = line3x3;
         InitializePieces();
         AssignClickEvents();
         gameWinUI.SetActive(false);
@@ -120,46 +125,55 @@ public class PuzzleManager : MonoBehaviour
 
         Debug.Log("🎉 Chúc mừng! Bạn đã hoàn thành trò chơi!");
         GameWin();
+        if (activeGrid == grid3x3) {
+            Image img = emptyPiece.GetComponent<Image>();
 
-        Image img = emptyPiece.GetComponent<Image>();
-
-        img.sprite = finalImage;
-        img.color = new Color(1, 1, 1, 1); 
+            img.sprite = finalImage;
+            img.color = new Color(1, 1, 1, 1); 
+        }
     }
 
     bool IsSolvable(List<Transform> pieces)
-{
-    List<int> numbers = new List<int>();
-
-    foreach (Transform piece in pieces)
     {
-        string name = piece.name; 
-        if (name.StartsWith("hcmut_"))
-        {
-            int num = int.Parse(name.Split('_')[1]);
-            numbers.Add(num);
-        }
-    }
+        List<int> numbers = new List<int>();
 
-    int inversionCount = 0;
-    for (int i = 0; i < numbers.Count - 1; i++)
-    {
-        for (int j = i + 1; j < numbers.Count; j++)
+        foreach (Transform piece in pieces)
         {
-            if (numbers[i] > numbers[j] && numbers[i] != 8 && numbers[j] != 8)
+            string name = piece.name; 
+            if (name.StartsWith("hcmut_"))
             {
-                inversionCount++;
+                int num = int.Parse(name.Split('_')[1]);
+                numbers.Add(num);
             }
         }
-    }
 
-    return inversionCount % 2 == 0; // Chỉ giải được nếu chẵn
-}
+        int inversionCount = 0;
+        for (int i = 0; i < numbers.Count - 1; i++)
+        {
+            for (int j = i + 1; j < numbers.Count; j++)
+            {
+                if (numbers[i] > numbers[j] && numbers[i] != 8 && numbers[j] != 8)
+                {
+                    inversionCount++;
+                }
+            }
+        }
+
+        return inversionCount % 2 == 0; // Chỉ giải được nếu chẵn
+    }
     public void GameWin()
     {
         Time.timeScale = 0;
-        gameWinUI.SetActive(true);
+        //gameWinUI.SetActive(true);
         Debug.Log("✅ gameWinUI đã được kích hoạt!");
+        if (activeGrid == grid3x3)
+        {
+           StartCoroutine(DoSomethingEveryHalfSecond());
+        }
+        else if (activeGrid == grid4x4)
+        {
+            StartCoroutine(DoSomethingEveryHalfSecond());
+        }
     }
 
     public void RestartGame(bool again)
@@ -180,29 +194,31 @@ public class PuzzleManager : MonoBehaviour
         SettingPanel.SetActive(true);
     }
     public void SetGridSize(int size)
-{
-    if (size == 3)
     {
-        grid3x3.SetActive(true);
-        line3x3.SetActive(true);
-        grid4x4.SetActive(false);
-        line4x4.SetActive(false);
-        activeGrid = grid3x3;
-    }
-    else if (size == 4)
-    {
-        grid3x3.SetActive(false);
-        line3x3.SetActive(false);
-        grid4x4.SetActive(true);
-        line4x4.SetActive(true);
-        activeGrid = grid4x4; // Cập nhật activeGrid
-    }
+        if (size == 3)
+        {
+            grid3x3.SetActive(true);
+            line3x3.SetActive(true);
+            grid4x4.SetActive(false);
+            line4x4.SetActive(false);
+            activeGrid = grid3x3;
+            activeLine = line3x3;
+        }
+        else if (size == 4)
+        {
+            grid3x3.SetActive(false);
+            line3x3.SetActive(false);
+            grid4x4.SetActive(true);
+            line4x4.SetActive(true);
+            activeGrid = grid4x4; // Cập nhật activeGrid
+            activeLine = line4x4;
+        }
 
-    InitializePieces();  // Load lại danh sách pieces
-    AssignClickEvents(); // Gán lại sự kiện click cho từng ô
-    emptyPiece = pieces.Find(piece => piece.CompareTag("Empty"));
+        InitializePieces();  // Load lại danh sách pieces
+        AssignClickEvents(); // Gán lại sự kiện click cho từng ô
+        emptyPiece = pieces.Find(piece => piece.CompareTag("Empty"));
 
-}
+    }
 
     public void onClick3x3()
     {
@@ -214,6 +230,60 @@ public class PuzzleManager : MonoBehaviour
         SetGridSize(4);
         SettingPanel.SetActive(false);
     }
+
+    IEnumerator DoSomethingEveryHalfSecond()
+    {
+        float totalTime = 2f; // Chạy trong 2 giây
+        float interval = 0.5f; // Mỗi 0.5 giây làm một lần
+
+        for (float t = 0; t < totalTime; t += interval)
+        {
+            Debug.Log("Hành động diễn ra lúc: " + t + " giây");
+            if (t == 0) {
+                foreach (Transform child in activeLine.transform)
+                {
+                    child.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f); // Trắng hoàn toàn (không trong suốt)
+                    gridLayout_3x3.spacing = new Vector2(4f, 4f);
+                    gridLayout_4x4.spacing = new Vector2(4f, 4f);
+                }
+            }
+            else if (t == 0.5f) {
+                foreach (Transform child in activeLine.transform)
+                {
+                    child.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.8f); // Trắng nhạt 
+                    gridLayout_3x3.spacing = new Vector2(3f, 3f);
+                    gridLayout_4x4.spacing = new Vector2(3f, 3f);
+                }
+            }
+            else if (t == 1) {
+                foreach (Transform child in activeLine.transform)
+                {
+                    child.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.5f); // Trắng mờ 
+                    gridLayout_3x3.spacing = new Vector2(1.5f, 1.5f);
+                    gridLayout_4x4.spacing = new Vector2(1.5f, 1.5f);
+                }
+            }
+            else if (t == 1.5f) {
+                foreach (Transform child in activeLine.transform)
+                {
+                    child.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f); // Gần như trong suốt 
+                    gridLayout_3x3.spacing = new Vector2(0f, 0f);
+                    gridLayout_4x4.spacing = new Vector2(0f, 0f);
+                }
+            }
+            yield return new WaitForSecondsRealtime(interval);
+        }
+
+        Debug.Log("Kết thúc sau 2 giây!");
+        line3x3.SetActive(false);
+        gameWinUI.SetActive(true);
+    }
+
+    
+
+
+
+
 }
 
 
