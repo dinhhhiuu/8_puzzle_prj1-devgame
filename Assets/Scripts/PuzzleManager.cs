@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEditor.Tilemaps;
+
 public class PuzzleManager : MonoBehaviour
 {
     public GridLayoutGroup gridLayout_3x3;
