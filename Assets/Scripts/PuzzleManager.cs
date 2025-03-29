@@ -18,11 +18,13 @@ public class PuzzleManager : MonoBehaviour
     [SerializeField] private GameObject grid4x4;
     [SerializeField] private GameObject line3x3;
     [SerializeField] private GameObject line4x4;
+    [SerializeField] private GameObject LockGame;
     private GameObject activeGrid;
     private GameObject activeLine;
 
     void Start()
     {
+        LockGame.SetActive(true);
         grid3x3.SetActive(true);
         line3x3.SetActive(true);
         grid4x4.SetActive(false);
@@ -36,6 +38,9 @@ public class PuzzleManager : MonoBehaviour
         SettingPanel.SetActive(false);
     }
 
+    public void StartGame(){
+        LockGame.SetActive(false);
+    }
     public void InitializePieces()
     {
         pieces.Clear();
