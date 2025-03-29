@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "8_puzzle_prj1-devgame.sln"
+    "dotnet.defaultSolution": "8_puzzle-devgame.sln"
 }

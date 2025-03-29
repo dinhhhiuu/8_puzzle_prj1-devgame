@@ -8,6 +8,7 @@ public class PuzzleManager : MonoBehaviour
 {
     public GridLayoutGroup gridLayout_3x3;
     public GridLayoutGroup gridLayout_4x4; 
+    public GameObject temp;
     private List<Transform> pieces = new List<Transform>();
     private Transform emptyPiece; 
     public Sprite finalImage;
@@ -169,7 +170,6 @@ public class PuzzleManager : MonoBehaviour
     public void GameWin()
     {
         Time.timeScale = 0;
-        //gameWinUI.SetActive(true);
         Debug.Log("✅ gameWinUI đã được kích hoạt!");
         if (activeGrid == grid3x3)
         {
@@ -197,6 +197,7 @@ public class PuzzleManager : MonoBehaviour
     {
         //SceneManager.LoadScene("Setting");
         SettingPanel.SetActive(true);
+        LockGame.SetActive(false);
     }
     public void SetGridSize(int size)
     {
@@ -229,11 +230,13 @@ public class PuzzleManager : MonoBehaviour
     {
         SetGridSize(3);
         SettingPanel.SetActive(false);
+        LockGame.SetActive(true);
     }
     public void onClick4x4()
     {
         SetGridSize(4);
         SettingPanel.SetActive(false);
+        LockGame.SetActive(true);
     }
 
     IEnumerator DoSomethingEveryHalfSecond()
@@ -280,7 +283,12 @@ public class PuzzleManager : MonoBehaviour
         }
 
         Debug.Log("Kết thúc sau 2 giây!");
-        line3x3.SetActive(false);
+        
+
+        yield return new WaitForSecondsRealtime(1f); 
+        activeGrid.SetActive(false);
+        activeLine.SetActive(false);
+        temp.SetActive(false);
         gameWinUI.SetActive(true);
     }
 
