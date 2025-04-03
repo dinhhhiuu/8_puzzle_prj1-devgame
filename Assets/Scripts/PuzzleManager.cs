@@ -20,11 +20,11 @@ public class PuzzleManager : MonoBehaviour
     [SerializeField] private GameObject line3x3;
     [SerializeField] private GameObject line4x4;
     [SerializeField] private GameObject LockGame;
+
     private GameObject activeGrid;
     private GameObject activeLine;
 
-    void Start()
-    {
+    void Start() {
         LockGame.SetActive(true);
         grid3x3.SetActive(true);
         line3x3.SetActive(true);
@@ -35,15 +35,15 @@ public class PuzzleManager : MonoBehaviour
         activeLine = line3x3;
         InitializePieces();
         AssignClickEvents();
+
         gameWinUI.SetActive(false);
         SettingPanel.SetActive(false);
     }
 
-    public void StartGame(){
+    public void StartGame() {
         LockGame.SetActive(false);
     }
-    public void InitializePieces()
-    {
+    public void InitializePieces() {
         pieces.Clear();
         foreach (Transform child in activeGrid.transform)
         {
@@ -60,32 +60,31 @@ public class PuzzleManager : MonoBehaviour
 
     public void ShufflePieces()
     {
-        do
-        {
-            for (int i = 0; i < pieces.Count - 1; i++)
+        int gridSize = activeGrid == grid3x3 ? 3 : 4; 
+        int totalTiles = gridSize * gridSize; 
+
+        do {
+            for (int i = 0; i < totalTiles - 1; i++)
             {
-                int randomIndex = Random.Range(0, pieces.Count - 1);
+                int randomIndex = Random.Range(0, totalTiles - 1);
                 SwapPieces(i, randomIndex);
             }
-        } while (!IsSolvable(pieces)); // Lặp lại nếu không giải được
+        } while (!IsSolvable(pieces, gridSize)); // Kiểm tra trạng thái có thể giải không
     }
 
-    void AssignClickEvents()
-    {
-        foreach (Transform piece in pieces)
-        {
+
+    void AssignClickEvents() {
+        foreach (Transform piece in pieces) {
             Button button = piece.GetComponent<Button>();
             if (button != null)
             {
-                //button.onClick.AddListener(() => TryMovePiece(piece));
                 button.onClick.RemoveAllListeners();  // Xóa tất cả listener trước khi thêm mới
                 button.onClick.AddListener(delegate { TryMovePiece(piece); });
             }
         }
     }
 
-    void TryMovePiece(Transform clickedPiece)
-    {
+    void TryMovePiece(Transform clickedPiece) {
         if (clickedPiece == emptyPiece) return;
 
         int clickedIndex = pieces.IndexOf(clickedPiece);
@@ -98,8 +97,7 @@ public class PuzzleManager : MonoBehaviour
         }
     }
 
-    bool IsAdjacent(int indexA, int indexB)
-    {
+    bool IsAdjacent(int indexA, int indexB) {
         int gridSize = activeGrid == grid3x3 ? 3 : 4; 
         int rowA = indexA / gridSize, colA = indexA % gridSize;
         int rowB = indexB / gridSize, colB = indexB % gridSize;
@@ -108,8 +106,7 @@ public class PuzzleManager : MonoBehaviour
                (Mathf.Abs(colA - colB) == 1 && rowA == rowB);   // Cùng hàng, khác cột
     }
 
-    void SwapPieces(int indexA, int indexB)
-    {
+    void SwapPieces(int indexA, int indexB) {
         Transform temp = pieces[indexA];
         pieces[indexA] = pieces[indexB];
         pieces[indexB] = temp;
@@ -120,8 +117,7 @@ public class PuzzleManager : MonoBehaviour
     }
 
     void CheckWinCondition(){
-        for (int i = 0; i < pieces.Count; i++)
-        {
+        for (int i = 0; i < pieces.Count; i++) {
             string expectedName = "hcmut_" + i; 
             if (!pieces[i].name.StartsWith(expectedName))
             {
@@ -139,8 +135,7 @@ public class PuzzleManager : MonoBehaviour
         }
     }
 
-    bool IsSolvable(List<Transform> pieces)
-    {
+    bool IsSolvable(List<Transform> pieces, int gridSize) {
         List<int> numbers = new List<int>();
 
         foreach (Transform piece in pieces)
@@ -154,19 +149,25 @@ public class PuzzleManager : MonoBehaviour
         }
 
         int inversionCount = 0;
-        for (int i = 0; i < numbers.Count - 1; i++)
-        {
+        for (int i = 0; i < numbers.Count - 1; i++) {
             for (int j = i + 1; j < numbers.Count; j++)
             {
-                if (numbers[i] > numbers[j] && numbers[i] != 8 && numbers[j] != 8)
+                if (numbers[i] > numbers[j] && numbers[i] != (gridSize * gridSize - 1) && numbers[j] != (gridSize * gridSize - 1))
                 {
                     inversionCount++;
                 }
             }
         }
 
-        return inversionCount % 2 == 0; // Chỉ giải được nếu chẵn
+        if (gridSize == 3) {
+            return inversionCount % 2 == 0; // 3x3 phải chẵn
+        }
+        else {
+            int emptyRow = pieces.IndexOf(emptyPiece) / gridSize; 
+            return (inversionCount + emptyRow) % 2 == 0; // 4x4 phải kiểm tra thêm vị trí ô trống
+        }
     }
+
     public void GameWin()
     {
         Time.timeScale = 0;
@@ -181,8 +182,7 @@ public class PuzzleManager : MonoBehaviour
         }
     }
 
-    public void RestartGame(bool again)
-    {
+    public void RestartGame(bool again) {
         Time.timeScale = 1;
         gameWinUI.SetActive(false);
         InitializePieces();  // Load lại danh sách pieces từ activeGrid
@@ -191,18 +191,13 @@ public class PuzzleManager : MonoBehaviour
         {
             SceneManager.LoadScene("SampleScene");
         }
-        //SceneManager.LoadScene("SampleScene");
     }
-    public void onClickSetting()
-    {
-        //SceneManager.LoadScene("Setting");
+    public void onClickSetting() {
         SettingPanel.SetActive(true);
         LockGame.SetActive(false);
     }
-    public void SetGridSize(int size)
-    {
-        if (size == 3)
-        {
+    public void SetGridSize(int size) {
+        if (size == 3) {
             grid3x3.SetActive(true);
             line3x3.SetActive(true);
             grid4x4.SetActive(false);
@@ -210,8 +205,7 @@ public class PuzzleManager : MonoBehaviour
             activeGrid = grid3x3;
             activeLine = line3x3;
         }
-        else if (size == 4)
-        {
+        else if (size == 4) {
             grid3x3.SetActive(false);
             line3x3.SetActive(false);
             grid4x4.SetActive(true);
@@ -226,21 +220,18 @@ public class PuzzleManager : MonoBehaviour
 
     }
 
-    public void onClick3x3()
-    {
+    public void onClick3x3() {
         SetGridSize(3);
         SettingPanel.SetActive(false);
         LockGame.SetActive(true);
     }
-    public void onClick4x4()
-    {
+    public void onClick4x4() {
         SetGridSize(4);
         SettingPanel.SetActive(false);
         LockGame.SetActive(true);
     }
 
-    IEnumerator DoSomethingEveryHalfSecond()
-    {
+    IEnumerator DoSomethingEveryHalfSecond() {
         float totalTime = 2f; // Chạy trong 2 giây
         float interval = 0.5f; // Mỗi 0.5 giây làm một lần
 
@@ -291,12 +282,6 @@ public class PuzzleManager : MonoBehaviour
         temp.SetActive(false);
         gameWinUI.SetActive(true);
     }
-
-    
-
-
-
-
 }
 
 
