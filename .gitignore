@@ -73,6 +73,8 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-Assembly-CSharp.csproj
-8_puzzle_prj1-devgame.sln
-8_puzzle-devgame.sln
+# Ignore all .csproj files
+*.csproj
+
+# Ignore all .sln files
+*.sln
