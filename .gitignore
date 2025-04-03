@@ -73,8 +73,4 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-# Ignore all .csproj files
-*.csproj
 
-# Ignore all .sln files
-*.sln
