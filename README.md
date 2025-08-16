@@ -10,15 +10,9 @@ An 8 Puzzle game featuring the Ho Chi Minh City University of Technology (HCMUT)
 ✅ Timer to challenge your speed.  
 ✅ Simple and student-friendly interface.  
 
-## Play Now
-🔗 [Try the game here](https://dinhhhiuu.itch.io/8-puzzle-hcmut)
-
-## Contact
-If you have any questions or suggestions, feel free to reach out via email: **dinhtanhieu2005@gmail.com**
 ## Developers
 - Đinh Hiếu  
 - Nguyễn Khải  
 - Thái Bảo  
 
----
-© 2025 Ho Chi Minh City University of Technology | DevGame Club
+
